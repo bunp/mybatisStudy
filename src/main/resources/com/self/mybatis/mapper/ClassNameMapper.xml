@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.self.mybatis.mapper.ClassNameMapper">
+    <select id="selectByClassId" resultType="ClassName">
+        select *
+        from classname
+        where class_id = #{classId}
+    </select>
+    <resultMap id="classnameMap" type="ClassName">
+        <id property="classId" column="class_id"></id>
+        <result property="className" column="class_name"></result>
+        <collection property="stus"
+                    select="com.self.mybatis.mapper.StuMapper.selectByClassId"
+                    column="class_id">
+
+        </collection>
+    </resultMap>
+    <!--    <select id="selectonetomany" resultMap="classnameMap">-->
+    <!--        select stu_id,stu_name,classname.class_id,classname.class_name from stu right join classname on stu.class_id = classname.class_id where classname.class_id = #{classId}-->
+    <!--    </select>-->
+    <select id="selectonetomany" resultMap="classnameMap">
+        select *
+        from classname
+        where class_id = #{classId}
+    </select>
+</mapper>

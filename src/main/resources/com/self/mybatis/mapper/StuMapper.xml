@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.self.mybatis.mapper.StuMapper">
+    <resultMap id="stuMap" type="Stu">
+        <id property="stuId" column="stu_id"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="classId" column="class_id"></result>
+        <association property="className" javaType="ClassName">
+            <id property="classId" column="class_id"></id>
+            <result property="className" column="class_name"></result>
+        </association>
+    </resultMap>
+    <resultMap id="stuMap1" type="Stu">
+        <id property="stuId" column="stu_id"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="classId" column="class_id"></result>
+        <result property="className.className" column="class_name"></result>
+    </resultMap>
+
+    <resultMap id="stuMap3" type="Stu">
+        <id property="stuId" column="stu_id"></id>
+        <result property="stuName" column="stu_name"></result>
+        <result property="classId" column="class_id"></result>
+        <association property="className"
+                     select="com.self.mybatis.mapper.ClassNameMapper.selectByClassId"
+                     column="class_id"
+        ></association>
+    </resultMap>
+    <select id="selectByStuId" resultMap="stuMap1">
+        select stu_id, stu_name, stu.class_id, classname.class_name
+        from stu
+                 left join classname on stu.class_id = classname.class_id
+        where stu_id = #{stuId}
+    </select>
+    <!--    <select id="selectByStuId" resultMap="stuMap3">-->
+    <!--        select stu_id, stu_name, class_id-->
+    <!--        from stu-->
+    <!--        where stu_id = #{stuId}-->
+    <!--    </select>-->
+    <select id="selectByClassId" resultType="Stu">
+        select stu_id, stu_name, class_id
+        from stu
+        where class_id = #{classId}
+    </select>
+    <insert id="batchInsert">
+        insert into stu values
+        <foreach collection="collection" item="stu" separator=",">
+            (#{stu.stuId},#{stu.stuName},#{stu.classId})
+        </foreach>
+    </insert>
+</mapper>
